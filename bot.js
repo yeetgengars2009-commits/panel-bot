@@ -27,7 +27,7 @@ const GUILD_ID = "1495883300978294968";
 const ROLE_ID = "1495901658469765291";
 
 // Replace AFTER hosting
-const APP_URL = "http://localhost:3000";
+const APP_URL = "https://panel-bot-production.up.railway.app";
 
 // =========================
 // FILE PATHS
