@@ -1,308 +1,104 @@
 {
-  "7CNZ-VR8B-D4B0-C0JI": {
-    "usedBy": "414948849019256835",
-    "hwid": null,
-    "scriptAccess": true
-  },
-  "82N2-3B7H-9T5C-DK1C": {
-    "usedBy": "1444725457777066126",
-    "hwid": null
-    "scriptAccess": true
-  },
-  "8C2D-Z20B-ZFD3-25KC": {
-    "usedBy": "1364970568717434992",
-    "scriptAccess": true,
-    "hwid": null
-  },
-  "Q9CY-51H9-2O4O-TNF0": {
-    "usedBy": null
-  },
-  "RZGF-QUDC-Y6IK-UT00": {
-    "usedBy": null
-  },
-  "MXHA-2HR9-VVX8-PHFB": {
-    "usedBy": null
-  },
-  "YF7D-MRMT-Q0A7-5NIE": {
-    "usedBy": null
-  },
-  "4QLT-9J4R-V6ZL-BKL7": {
-    "usedBy": null
-  },
-  "N0SJ-LLIZ-UM0U-ZV46": {
-    "usedBy": null
-  },
-  "17FO-H5SX-65SU-DHXI": {
-    "usedBy": null
-  },
-  "HWJD-MKKC-ZUUW-J3DL": {
-    "usedBy": null
-  },
-  "1I5B-NH5Y-EAS3-M5PU": {
-    "usedBy": null
-  },
-  "928Z-5H01-D3X6-NP6D": {
-    "usedBy": null
-  },
-  "26Y9-RI56-Z50P-E0NZ": {
-    "usedBy": null
-  },
-  "3E7H-KNJK-BZU6-LT0O": {
-    "usedBy": null
-  },
-  "BEAD-QA1U-BKWN-X31Q": {
-    "usedBy": null
-  },
-  "KVQU-7TJA-L38Z-X84E": {
-    "usedBy": null
-  },
-  "2F6E-Y34Y-3EFG-BYHY": {
-    "usedBy": null
-  },
-  "6H07-X0WF-7KXO-2N3S": {
-    "usedBy": null
-  },
-  "3T6N-UKND-HA96-BP8I": {
-    "usedBy": null
-  },
-  "DY5X-7IUC-4EQJ-YNLQ": {
-    "usedBy": null
-  },
-  "9K7Z-85KD-H27P-EOPF": {
-    "usedBy": null
-  },
-  "YEX4-ED61-23M7-FTMX": {
-    "usedBy": null
-  },
-  "ARPV-NVVO-9PQX-O4Y9": {
-    "usedBy": null
-  },
-  "K3TM-JJSQ-JGXC-T8BK": {
-    "usedBy": null
-  },
-  "OS67-BY00-555C-SYT4": {
-    "usedBy": null
-  },
-  "WAKH-F8ZI-6HRN-E3DD": {
-    "usedBy": null
-  },
-  "JJNG-1T6A-KFWN-44CY": {
-    "usedBy": null
-  },
-  "GUXF-9LL6-EZW4-R0DE": {
-    "usedBy": null
-  },
-  "WW7V-1QQS-TARB-EJW9": {
-    "usedBy": null
-  },
-  "XR50-A13C-YNBU-79BU": {
-    "usedBy": null
-  },
-  "YHAK-HAEH-ZX6I-UKIU": {
-    "usedBy": null
-  },
-  "YE26-9BMM-U7IQ-V73H": {
-    "usedBy": null
-  },
-  "GY8D-NIFE-BF1Y-Y235": {
-    "usedBy": null
-  },
-  "1WSC-GHOZ-9NXB-5TNR": {
-    "usedBy": null
-  },
-  "70ZC-O68H-RYHQ-78WC": {
-    "usedBy": null
-  },
-  "XUIS-B2A1-AGGR-3QLC": {
-    "usedBy": null
-  },
-  "NUK7-361D-2OZ9-M2VM": {
-    "usedBy": null
-  },
-  "0I58-5AAB-R9EG-Z0Y9": {
-    "usedBy": null
-  },
-  "Y5TA-8EWL-SZMJ-06NU": {
-    "usedBy": null
-  },
-  "DAMD-EDDG-K3CB-04OS": {
-    "usedBy": null
-  },
-  "2L5K-VOUR-2L6M-3ABU": {
-    "usedBy": null
-  },
-  "28VF-DAR2-776W-XV58": {
-    "usedBy": null
-  },
-  "58DS-MMW3-9EFB-UTV2": {
-    "usedBy": null
-  },
-  "33S9-NZ47-E8NW-UB85": {
-    "usedBy": null
-  },
-  "R7PG-TUSE-QJDN-V7AK": {
-    "usedBy": null
-  },
-  "C3AC-39CK-M7I9-EYI3": {
-    "usedBy": null
-  },
-  "BMTV-VQ02-HG4C-J409": {
-    "usedBy": null
-  },
-  "UKQB-HILZ-TASQ-NT5M": {
-    "usedBy": null
-  },
-  "DFM9-LT61-TTJY-J6LK": {
-    "usedBy": null
-  },
-  "18ZW-T8EH-JMPK-N02W": {
-    "usedBy": null
-  },
-  "DFNW-Y8EU-MCNY-YGT3": {
-    "usedBy": null
-  },
-  "ZXPS-YIHZ-MIO5-ZO0H": {
-    "usedBy": null
-  },
-  "GX5X-O7FX-VDH9-6NO5": {
-    "usedBy": null
-  },
-  "ELIS-YNC3-4LS3-MF8F": {
-    "usedBy": null
-  },
-  "L2GG-94ZU-XAG0-KBSJ": {
-    "usedBy": null
-  },
-  "VGXN-JDSQ-O9KR-DA3F": {
-    "usedBy": null
-  },
-  "XX6E-U5JO-OILI-0VKS": {
-    "usedBy": null
-  },
-  "26EF-TFA1-91XL-MK0R": {
-    "usedBy": null
-  },
-  "KJHA-AZKA-0MHQ-B6Y4": {
-    "usedBy": null
-  },
-  "U230-4HH9-GDTK-AY2Q": {
-    "usedBy": null
-  },
-  "8AUW-B5N1-TNL1-N8IK": {
-    "usedBy": null
-  },
-  "3JA3-8H3G-TV6Y-CFU7": {
-    "usedBy": null
-  },
-  "U6GM-JJA9-6P9O-BCIN": {
-    "usedBy": null
-  },
-  "SITN-SNKK-1Q42-NC80": {
-    "usedBy": null
-  },
-  "ILLS-JMOY-FEN5-K6S6": {
-    "usedBy": null
-  },
-  "H30N-A8EJ-7A06-UQJD": {
-    "usedBy": null
-  },
-  "ZPSX-U1SM-ITLJ-NUL5": {
-    "usedBy": null
-  },
-  "GSFK-NXIV-OGVJ-CA33": {
-    "usedBy": null
-  },
-  "MM1K-P8KY-JW5Z-9N97": {
-    "usedBy": null
-  },
-  "WL3N-6BHH-VQFE-SABC": {
-    "usedBy": null
-  },
-  "5QWJ-I0F0-JMXA-K61P": {
-    "usedBy": null
-  },
-  "4X2A-JH4M-ZM1X-2IHX": {
-    "usedBy": null
-  },
-  "E8A5-QJG6-REAK-YKMJ": {
-    "usedBy": null
-  },
-  "XZXG-UEBD-AEMB-809Y": {
-    "usedBy": null
-  },
-  "4825-11JW-TBDL-K3JY": {
-    "usedBy": null
-  },
-  "YWOX-ZM3E-39N1-A7HI": {
-    "usedBy": null
-  },
-  "DJHA-ZCUP-8YOI-TY2H": {
-    "usedBy": null
-  },
-  "RZFV-3HQY-1V2D-1EG3": {
-    "usedBy": null
-  },
-  "QB8X-8K1Q-HXZD-1JF5": {
-    "usedBy": null
-  },
-  "3GBU-9ZFT-QJPI-NH4A": {
-    "usedBy": null
-  },
-  "GUA4-DFEN-EUVP-MCBB": {
-    "usedBy": null
-  },
-  "TL6L-P6U1-UBWJ-XMQJ": {
-    "usedBy": null
-  },
-  "K6EA-FA7N-L4TV-Q8ZC": {
-    "usedBy": null
-  },
-  "NV31-SWC5-J9LE-JYA6": {
-    "usedBy": null
-  },
-  "YIEX-V2Z7-JYEV-4EZ9": {
-    "usedBy": null
-  },
-  "8ZQF-VLF6-ZQ1X-25FE": {
-    "usedBy": null
-  },
-  "DOAD-AEMO-OS84-VV9W": {
-    "usedBy": null
-  },
-  "N2P0-2X17-6T3K-OHQD": {
-    "usedBy": null
-  },
-  "Y93M-FRFR-OGHC-0CV7": {
-    "usedBy": null
-  },
-  "Z0IU-L9EA-CZFV-FGT5": {
-    "usedBy": null
-  },
-  "WAJN-EMED-G7QV-FG7L": {
-    "usedBy": null
-  },
-  "AZ20-YKN0-T3J1-C9SV": {
-    "usedBy": null
-  },
-  "QU4P-C2Y2-LF40-UXQ8": {
-    "usedBy": null
-  },
-  "IRP8-0S7M-NL5M-BX4M": {
-    "usedBy": null
-  },
-  "RLZR-LREV-DHVZ-7PBC": {
-    "usedBy": null
-  },
-  "DDEY-NQ42-P8X7-MZ6S": {
-    "usedBy": null
-  },
-  "SZN8-DWY2-NMN0-Q6LY": {
-    "usedBy": null
-  },
-  "LH2B-1QE5-BZSO-NT7F": {
-    "usedBy": null
-  },
-  "GDP5-Z4CV-XRKP-UN7C": {
-    "usedBy": null
-  }
+  "7CNZ-VR8B-D4B0-C0JI": { "usedBy": "414948849019256835", "hwid": null, "scriptAccess": true },
+  "82N2-3B7H-9T5C-DK1C": { "usedBy": "1444725457777066126", "hwid": null, "scriptAccess": true },
+  "8C2D-Z20B-ZFD3-25KC": { "usedBy": "1364970568717434992", "hwid": null, "scriptAccess": true },
+
+  "Q9CY-51H9-2040-TNF0": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "RZGF-QUDC-Y6IK-UT00": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "MXHA-2HR9-VVX8-PHFB": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "YF7D-MRMT-Q0A7-5NIE": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "4QLT-9J4R-V6ZL-BKL7": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "N0SJ-LLIZ-UM0U-ZV46": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "17FO-H5SX-65SU-DHXI": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "HWJD-MKKC-ZUUW-J3DL": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "1I5B-NH5Y-EAS3-M5PU": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "928Z-5H01-D3X6-NP6D": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "26Y9-RI56-Z50P-E0NZ": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "3E7H-KNJK-BZU6-LT0O": { "usedBy": null, "hwid": null, "scriptAccess": true },
+
+  "BEAD-QA1U-BKWN-X31Q": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "KVQU-7TJA-L38Z-X84E": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "2F6E-Y34Y-3EFG-BYHY": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "6H07-X0WF-7KXO-2N3S": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "3T6N-UKND-HA96-BP8I": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "DY5X-7IUC-4EQJ-YNLQ": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "9K7Z-85KD-H27P-EOPF": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "YEX4-ED61-23M7-FTMX": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "ARPV-NVVO-9PQX-O4Y9": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "K3TM-JJSQ-JGXC-T8BK": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "OS67-BY00-555C-SYT4": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "WAKH-F8ZI-6HRN-E3DD": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "JJNG-1T6A-KFWN-44CY": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "GUXF-9LL6-EZW4-R0DE": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "WW7V-1QQS-TARB-EJW9": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "XR50-A13C-YNBU-79BU": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "YHAK-HAEH-ZX6I-UKIU": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "YE26-9BMM-U7IQ-V73H": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "GY8D-NIFE-BF1Y-Y235": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "1WSC-GHOZ-9NXB-5TNR": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "70ZC-O68H-RYHQ-78WC": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "XUIS-B2A1-AGGR-3QLC": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "NUK7-361D-2OZ9-M2VM": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "0I58-5AAB-R9EG-Z0Y9": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "Y5TA-8EWL-SZMJ-06NU": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "DAMD-EDDG-K3CB-04OS": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "2L5K-VOUR-2L6M-3ABU": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "28VF-DAR2-776W-XV58": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "58DS-MMW3-9EFB-UTV2": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "33S9-NZ47-E8NW-UB85": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "R7PG-TUSE-QJDN-V7AK": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "C3AC-39CK-M7I9-EYI3": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "BMTV-VQ02-HG4C-J409": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "UKQB-HILZ-TASQ-NT5M": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "DFM9-LT61-TTJY-J6LK": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "18ZW-T8EH-JMPK-N02W": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "DFNW-Y8EU-MCNY-YGT3": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "ZXPS-YIHZ-MIO5-ZO0H": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "GX5X-O7FX-VDH9-6NO5": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "ELIS-YNC3-4LS3-MF8F": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "L2GG-94ZU-XAG0-KBSJ": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "VGXN-JDSQ-O9KR-DA3F": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "XX6E-U5JO-OILI-0VKS": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "26EF-TFA1-91XL-MK0R": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "KJHA-AZKA-0MHQ-B6Y4": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "U230-4HH9-GDTK-AY2Q": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "8AUW-B5N1-TNL1-N8IK": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "3JA3-8H3G-TV6Y-CFU7": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "U6GM-JJA9-6P9O-BCIN": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "SITN-SNKK-1Q42-NC80": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "ILLS-JMOY-FEN5-K6S6": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "H30N-A8EJ-7A06-UQJD": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "ZPSX-U1SM-ITLJ-NUL5": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "GSFK-NXIV-OGVJ-CA33": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "MM1K-P8KY-JW5Z-9N97": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "WL3N-6BHH-VQFE-SABC": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "5QWJ-I0F0-JMXA-K61P": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "4X2A-JH4M-ZM1X-2IHX": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "E8A5-QJG6-REAK-YKMJ": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "XZXG-UEBD-AEMB-809Y": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "4825-11JW-TBDL-K3JY": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "YWOX-ZM3E-39N1-A7HI": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "DJHA-ZCUP-8YOI-TY2H": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "RZFV-3HQY-1V2D-1EG3": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "QB8X-8K1Q-HXZD-1JF5": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "3GBU-9ZFT-QJPI-NH4A": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "GUA4-DFEN-EUVP-MCBB": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "TL6L-P6U1-UBWJ-XMQJ": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "K6EA-FA7N-L4TV-Q8ZC": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "NV31-SWC5-J9LE-JYA6": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "YIEX-V2Z7-JYEV-4EZ9": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "8ZQF-VLF6-ZQ1X-25FE": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "DOAD-AEMO-OS84-VV9W": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "N2P0-2X17-6T3K-OHQD": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "Y93M-FRFR-OGHC-0CV7": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "Z0IU-L9EA-CZFV-FGT5": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "WAJN-EMED-G7QV-FG7L": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "AZ20-YKN0-T3J1-C9SV": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "QU4P-C2Y2-LF40-UXQ8": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "IRP8-0S7M-NL5M-BX4M": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "RLZR-LREV-DHVZ-7PBC": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "DDEY-NQ42-P8X7-MZ6S": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "SZN8-DWY2-NMN0-Q6LY": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "LH2B-1QE5-BZSO-NT7F": { "usedBy": null, "hwid": null, "scriptAccess": true },
+  "GDP5-Z4CV-XRKP-UN7C": { "usedBy": null, "hwid": null, "scriptAccess": true }
 }
