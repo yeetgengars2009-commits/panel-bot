@@ -2,19 +2,9 @@ const crypto = require("crypto");
 const express = require("express");
 
 const {
-  Client,
-  GatewayIntentBits,
-  ActionRowBuilder,
-  ButtonBuilder,
-  ButtonStyle,
-  ModalBuilder,
-  TextInputBuilder,
-  TextInputStyle,
-  SlashCommandBuilder,
-  REST,
-  Routes,
-  Events,
-  EmbedBuilder
+  Client, GatewayIntentBits, ActionRowBuilder, ButtonBuilder, ButtonStyle,
+  ModalBuilder, TextInputBuilder, TextInputStyle, SlashCommandBuilder,
+  REST, Routes, Events, EmbedBuilder
 } = require("discord.js");
 
 const { createClient } = require("@supabase/supabase-js");
@@ -34,11 +24,6 @@ const PORT = process.env.PORT || 3000;
 let SCRIPT = `
 print("Zawa loaded")
 `;
-
-function hideKey(key) {
-  if (!key || key.length < 9) return "Hidden";
-  return key.slice(0, 4) + "-****-****-" + key.slice(-4);
-}
 
 function generateKey() {
   return crypto.randomBytes(8).toString("hex").toUpperCase().match(/.{1,4}/g).join("-");
@@ -63,13 +48,10 @@ app.get("/hub", async (req, res) => {
   if (!data.usedby) return res.type("text/plain").send('print("Key not redeemed")');
   if (data.scriptaccess === false || data.banned === true) return res.type("text/plain").send('print("No access")');
 
-  await supabase
-    .from("keys")
-    .update({
-      totalexecutions: (data.totalexecutions || 0) + 1,
-      lastexecution: new Date().toISOString()
-    })
-    .eq("key", key);
+  await supabase.from("keys").update({
+    totalexecutions: (data.totalexecutions || 0) + 1,
+    lastexecution: new Date().toISOString()
+  }).eq("key", key);
 
   return res.type("text/plain").send(SCRIPT);
 });
@@ -108,8 +90,8 @@ const commands = [
 
   new SlashCommandBuilder()
     .setName("unblacklist")
-    .setDescription("Unblacklist a key")
-    .addStringOption(opt => opt.setName("key").setDescription("Key").setRequired(true)),
+    .setDescription("Unblacklist a user")
+    .addUserOption(opt => opt.setName("user").setDescription("User").setRequired(true)),
 
   new SlashCommandBuilder()
     .setName("resetkey")
@@ -195,7 +177,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
         const user = interaction.options.getUser("user");
         const row = await getUserKeyRow(user.id);
 
-        if (!row) return interaction.reply({ content: "That user has no redeemed key.", ephemeral: true });
+        if (!row) return interaction.reply({ content: "That user has no redeemed key." });
 
         await supabase.from("keys").update({
           hwid: null,
@@ -203,7 +185,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
           lastreset: new Date().toISOString()
         }).eq("usedby", user.id);
 
-        return interaction.reply({ content: `HWID reset for ${user.tag}.`, ephemeral: true });
+        return interaction.reply({ content: `HWID reset for ${user.tag}.` });
       }
 
       if (interaction.commandName === "keyinfo") {
@@ -246,7 +228,7 @@ Note: ${data.note || "Not specified"}`,
         const user = interaction.options.getUser("user");
         const row = await getUserKeyRow(user.id);
 
-        if (!row) return interaction.reply({ content: "That user has no redeemed key.", ephemeral: true });
+        if (!row) return interaction.reply({ content: "That user has no redeemed key." });
 
         await supabase.from("keys").update({
           usedby: null,
@@ -254,20 +236,29 @@ Note: ${data.note || "Not specified"}`,
           scriptaccess: false,
           banned: true,
           note: `Blacklisted user ${user.tag} (${user.id})`
-        }).eq("usedby", user.id);
+        }).eq("key", row.key);
 
-        return interaction.reply({ content: `${user.tag} has been blacklisted and their key was reset.`, ephemeral: true });
+        return interaction.reply({ content: `${user.tag} has been blacklisted and their key was reset.` });
       }
 
       if (interaction.commandName === "unblacklist") {
-        const key = interaction.options.getString("key");
+        const user = interaction.options.getUser("user");
+
+        const { data } = await supabase
+          .from("keys")
+          .select("*")
+          .ilike("note", `%${user.id}%`)
+          .maybeSingle();
+
+        if (!data) return interaction.reply({ content: "No blacklisted key found for that user." });
 
         await supabase.from("keys").update({
           scriptaccess: true,
-          banned: false
-        }).eq("key", key);
+          banned: false,
+          note: null
+        }).eq("key", data.key);
 
-        return interaction.reply({ content: "Key unblacklisted.", ephemeral: true });
+        return interaction.reply({ content: `${user.tag} has been unblacklisted. Their old key can be redeemed again.` });
       }
 
       if (interaction.commandName === "resetkey") {
@@ -278,7 +269,7 @@ Note: ${data.note || "Not specified"}`,
           hwid: null
         }).eq("key", key);
 
-        return interaction.reply({ content: "Key reset.", ephemeral: true });
+        return interaction.reply({ content: "Key reset." });
       }
 
       if (interaction.commandName === "deletekey") {
@@ -286,7 +277,7 @@ Note: ${data.note || "Not specified"}`,
 
         await supabase.from("keys").delete().eq("key", key);
 
-        return interaction.reply({ content: "Key deleted.", ephemeral: true });
+        return interaction.reply({ content: "Key deleted." });
       }
     }
 
@@ -340,7 +331,7 @@ loadstring(game:HttpGet("${APP_URL}/hub?key=" .. getgenv().key))()`;
 `**Stats**
 Total Executions: ${row.totalexecutions || 0} 🧠
 HWID Status: ${row.hwid ? "Assigned ✅" : "Not Assigned ❌"}
-Key: ${hideKey(row.key)} 🔒
+Key: ||${row.key}|| 🔒
 Total HWID Resets: ${row.totalhwidresets || 0} ⚙️
 Last Reset: ${row.lastreset || "Never"} 📅
 Expires At: ${row.expiresat || "Never"} 📅
