@@ -41,7 +41,6 @@ async function hasManagerRole(interaction) {
 
 app.get("/hub", async (req, res) => {
   const key = req.query.key;
-
   const { data, error } = await supabase.from("keys").select("*").eq("key", key).maybeSingle();
 
   if (!data || error) return res.type("text/plain").send('print("Invalid key")');
@@ -165,11 +164,10 @@ client.on(Events.InteractionCreate, async (interaction) => {
         }
 
         const { error } = await supabase.from("keys").insert(rows);
-        if (error) return interaction.reply({ content: "Failed to generate keys. Check Railway logs.", ephemeral: true });
+        if (error) return interaction.reply({ content: "Failed to generate keys. Check Railway logs." });
 
         return interaction.reply({
-          content: `Generated ${amount} key(s):\n\`\`\`\n${rows.map(r => r.key).join("\n")}\n\`\`\``,
-          ephemeral: true
+          content: `Generated ${amount} key(s):\n\`\`\`\n${rows.map(r => r.key).join("\n")}\n\`\`\``
         });
       }
 
@@ -192,7 +190,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
         const key = interaction.options.getString("key");
         const { data } = await supabase.from("keys").select("*").eq("key", key).maybeSingle();
 
-        if (!data) return interaction.reply({ content: "Key not found.", ephemeral: true });
+        if (!data) return interaction.reply({ content: "Key not found." });
 
         return interaction.reply({
           content:
@@ -207,8 +205,7 @@ HWID Resets: ${data.totalhwidresets || 0}
 Last Reset: ${data.lastreset || "Never"}
 Last Execution: ${data.lastexecution || "Never"}
 Expires At: ${data.expiresat || "Never"}
-Note: ${data.note || "Not specified"}`,
-          ephemeral: true
+Note: ${data.note || "Not specified"}`
         });
       }
 
@@ -216,11 +213,10 @@ Note: ${data.note || "Not specified"}`,
         const user = interaction.options.getUser("user");
         const { data } = await supabase.from("keys").select("*").eq("usedby", user.id);
 
-        if (!data || data.length === 0) return interaction.reply({ content: "No keys found for that user.", ephemeral: true });
+        if (!data || data.length === 0) return interaction.reply({ content: "No keys found for that user." });
 
         return interaction.reply({
-          content: `Keys for ${user.tag}:\n\`\`\`\n${data.map(k => k.key).join("\n")}\n\`\`\``,
-          ephemeral: true
+          content: `Keys for ${user.tag}:\n\`\`\`\n${data.map(k => k.key).join("\n")}\n\`\`\``
         });
       }
 
