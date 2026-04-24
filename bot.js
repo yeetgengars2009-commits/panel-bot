@@ -1,4 +1,6 @@
+const crypto = require("crypto");
 const express = require("express");
+
 const {
   Client,
   GatewayIntentBits,
@@ -12,8 +14,7 @@ const {
   REST,
   Routes,
   Events,
-  EmbedBuilder,
-  PermissionFlagsBits
+  EmbedBuilder
 } = require("discord.js");
 
 const { createClient } = require("@supabase/supabase-js");
@@ -22,6 +23,7 @@ const TOKEN = process.env.TOKEN;
 const CLIENT_ID = "1496600113638932520";
 const GUILD_ID = "1495883300978294968";
 const ROLE_ID = "1495901658469765291";
+const KEY_MANAGER_ROLE_ID = "1495895086284804258";
 
 const APP_URL = "https://panel-bot-production.up.railway.app";
 
@@ -46,24 +48,14 @@ app.get("/hub", async (req, res) => {
     .eq("key", key)
     .single();
 
-  if (!data || error) {
-    return res.type("text/plain").send('print("Invalid key")');
-  }
-
-  if (!data.usedby) {
-    return res.type("text/plain").send('print("Key not redeemed")');
-  }
-
-  if (data.scriptaccess === false) {
-    return res.type("text/plain").send('print("No access")');
-  }
+  if (!data || error) return res.type("text/plain").send('print("Invalid key")');
+  if (!data.usedby) return res.type("text/plain").send('print("Key not redeemed")');
+  if (data.scriptaccess === false) return res.type("text/plain").send('print("No access")');
 
   return res.type("text/plain").send(SCRIPT);
 });
 
-app.listen(PORT, () => {
-  console.log("Server running on port " + PORT);
-});
+app.listen(PORT, () => console.log("Server running on port " + PORT));
 
 const client = new Client({
   intents: [GatewayIntentBits.Guilds],
@@ -78,9 +70,18 @@ const commands = [
     .setName("resethwid")
     .setDescription("Force reset a user's HWID")
     .addUserOption(opt =>
-      opt.setName("user")
-        .setDescription("User to reset")
+      opt.setName("user").setDescription("User to reset").setRequired(true)
+    ),
+
+  new SlashCommandBuilder()
+    .setName("genkey")
+    .setDescription("Generate new keys")
+    .addIntegerOption(opt =>
+      opt.setName("amount")
+        .setDescription("How many keys to generate")
         .setRequired(true)
+        .setMinValue(1)
+        .setMaxValue(50)
     )
 ];
 
@@ -95,6 +96,20 @@ async function registerCommands() {
   console.log("Commands registered");
 }
 
+async function hasManagerRole(interaction) {
+  const member = await interaction.guild.members.fetch(interaction.user.id);
+  return member.roles.cache.has(KEY_MANAGER_ROLE_ID);
+}
+
+function generateKey() {
+  return crypto
+    .randomBytes(8)
+    .toString("hex")
+    .toUpperCase()
+    .match(/.{1,4}/g)
+    .join("-");
+}
+
 async function getUserKey(userId) {
   const { data } = await supabase
     .from("keys")
@@ -103,11 +118,6 @@ async function getUserKey(userId) {
     .single();
 
   return data ? data.key : null;
-}
-
-async function hasRedeemed(userId) {
-  const key = await getUserKey(userId);
-  return !!key;
 }
 
 client.once(Events.ClientReady, () => {
@@ -121,15 +131,13 @@ client.on(Events.InteractionCreate, async (interaction) => {
         const panelEmbed = new EmbedBuilder()
           .setColor(0x2f6df6)
           .setTitle("User Panel")
-          .setDescription(
-            [
-              "Welcome! Use the buttons below to manage your key.",
-              "",
-              "Redeem Key - Link a key to your Discord account.",
-              "Get Script - Get the script with your key.",
-              "Reset HWID - Reset your locked HWID (usable once every 24h)."
-            ].join("\n")
-          );
+          .setDescription([
+            "Welcome! Use the buttons below to manage your key.",
+            "",
+            "Redeem Key - Link a key to your Discord account.",
+            "Get Script - Get the script with your key.",
+            "Reset HWID - Reset your locked HWID."
+          ].join("\n"));
 
         const row = new ActionRowBuilder().addComponents(
           new ButtonBuilder()
@@ -154,10 +162,48 @@ client.on(Events.InteractionCreate, async (interaction) => {
         });
       }
 
-      if (interaction.commandName === "resethwid") {
-        if (!interaction.memberPermissions?.has(PermissionFlagsBits.ManageGuild)) {
+      if (interaction.commandName === "genkey") {
+        if (!(await hasManagerRole(interaction))) {
           return interaction.reply({
-            content: "You don't have permission to use this.",
+            content: "You do not have permission to use this command.",
+            ephemeral: true,
+          });
+        }
+
+        const amount = interaction.options.getInteger("amount");
+        const rows = [];
+
+        for (let i = 0; i < amount; i++) {
+          rows.push({
+            key: generateKey(),
+            usedby: null,
+            hwid: null,
+            scriptaccess: true
+          });
+        }
+
+        const { error } = await supabase.from("keys").insert(rows);
+
+        if (error) {
+          console.error("GENKEY ERROR:", error);
+          return interaction.reply({
+            content: "Failed to generate keys. Check Railway logs.",
+            ephemeral: true,
+          });
+        }
+
+        const keyList = rows.map(row => row.key).join("\n");
+
+        return interaction.reply({
+          content: `Generated ${amount} key(s):\n\`\`\`\n${keyList}\n\`\`\``,
+          ephemeral: true,
+        });
+      }
+
+      if (interaction.commandName === "resethwid") {
+        if (!(await hasManagerRole(interaction))) {
+          return interaction.reply({
+            content: "You do not have permission to use this command.",
             ephemeral: true,
           });
         }
@@ -188,10 +234,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
           .setStyle(TextInputStyle.Short)
           .setRequired(true);
 
-        modal.addComponents(
-          new ActionRowBuilder().addComponents(input)
-        );
-
+        modal.addComponents(new ActionRowBuilder().addComponents(input));
         return interaction.showModal(modal);
       }
 
