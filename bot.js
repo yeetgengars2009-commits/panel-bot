@@ -28,7 +28,7 @@ const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SER
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-let SCRIPT = fs.readFileSync("./script.lua", "utf8");
+let SCRIPT = fs.readFileSync("./final zawa.lua", "utf8");
 
 function zawaEmbed(title, description) {
   return new EmbedBuilder()
