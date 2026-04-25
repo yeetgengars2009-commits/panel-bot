@@ -81,6 +81,10 @@ async function getRoleAccess(interaction) {
 app.get("/hub", async (req, res) => {
   const key = req.query.key;
 
+  app.get("/hub", async (req, res) => {
+  // sends script
+});
+
   const { data, error } = await supabase
     .from("keys")
     .select("*")
