@@ -81,8 +81,41 @@ async function getRoleAccess(interaction) {
 app.get("/hub", async (req, res) => {
   const key = req.query.key;
 
-  app.get("/hub", async (req, res) => {
-  // sends script
+  const { data, error } = await supabase
+    .from("keys")
+    .select("*")
+    .eq("key", key)
+    .maybeSingle();
+
+  if (!data || error) return res.type("text/plain").send('print("Invalid key")');
+  if (!data.usedby) return res.type("text/plain").send('print("Key not redeemed")');
+  if (data.scriptaccess === false || data.banned === true) return res.type("text/plain").send('print("No access")');
+
+  res.send(SCRIPT);
+});
+
+app.get("/auth", async (req, res) => {
+  const key = req.query.key;
+  const hwid = req.query.hwid;
+
+  if (!key || !hwid) return res.send("MISSING");
+
+  const { data } = await supabase
+    .from("keys")
+    .select("*")
+    .eq("key", key)
+    .maybeSingle();
+
+  if (!data) return res.send("INVALID");
+
+  if (!data.hwid) {
+    await supabase.from("keys").update({ hwid }).eq("key", key);
+    return res.send("OK");
+  }
+
+  if (data.hwid !== hwid) return res.send("HWID_MISMATCH");
+
+  return res.send("OK");
 });
 
   const { data, error } = await supabase
