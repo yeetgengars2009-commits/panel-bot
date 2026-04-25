@@ -1,3 +1,4 @@
+const fs = require("fs");
 const crypto = require("crypto");
 const express = require("express");
 
@@ -27,9 +28,7 @@ const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SER
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-let SCRIPT = String.raw`
-print("WORKING TEST")
-`;
+let SCRIPT = fs.readFileSync("./script.lua", "utf8");
 
 function zawaEmbed(title, description) {
   return new EmbedBuilder()
