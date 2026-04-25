@@ -437,6 +437,17 @@ loadstring(game:HttpGet("${APP_URL}/hub?key=" .. getgenv().key))()`;
 
       if (interaction.customId === "reset_hwid") {
         const row = await getUserKeyRow(interaction.user.id);
+        const DAY = 24 * 60 * 60 * 1000;
+
+if (row.lastreset && Date.now() - new Date(row.lastreset).getTime() < DAY) {
+  const remaining = DAY - (Date.now() - new Date(row.lastreset).getTime());
+  const hours = Math.ceil(remaining / (60 * 60 * 1000));
+
+  return interaction.reply({
+    embeds: [zawaEmbed("Cooldown", `You can reset HWID again in about ${hours} hour(s).`)],
+    ephemeral: true
+  });
+}
 
         if (!row) return interaction.reply({ embeds: [zawaEmbed("No Key", "Redeem a valid key first.")], ephemeral: true });
 
