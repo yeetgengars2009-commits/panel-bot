@@ -23,7 +23,10 @@ const LOW_ROLE = "1495905337104924782";
 
 const APP_URL = "https://panel-bot-production.up.railway.app";
 
-const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_KEY
+);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -42,19 +45,17 @@ function generateKey() {
   return crypto.randomBytes(8).toString("hex").toUpperCase().match(/.{1,4}/g).join("-");
 }
 
-function getExpiryDate(length, unit) {
-  const now = new Date();
-
-  if (unit === "minutes") now.setMinutes(now.getMinutes() + length);
-  if (unit === "hours") now.setHours(now.getHours() + length);
-  if (unit === "days") now.setDate(now.getDate() + length);
-
-  return now.toISOString();
-}
-
 function isExpired(expiresAt) {
   if (!expiresAt) return false;
   return new Date(expiresAt).getTime() <= Date.now();
+}
+
+function getExpiryDate(length, unit) {
+  const now = new Date();
+  if (unit === "minutes") now.setMinutes(now.getMinutes() + length);
+  if (unit === "hours") now.setHours(now.getHours() + length);
+  if (unit === "days") now.setDate(now.getDate() + length);
+  return now.toISOString();
 }
 
 async function getUserKeyRow(userId) {
@@ -67,7 +68,7 @@ async function getUserKeyRow(userId) {
   return data || null;
 }
 
-async function getRoleAccess(interaction) {
+async function getAccess(interaction) {
   const member = await interaction.guild.members.fetch(interaction.user.id);
 
   return {
@@ -78,45 +79,17 @@ async function getRoleAccess(interaction) {
   };
 }
 
+/* =========================
+   EXPRESS ROUTES
+========================= */
+
+app.get("/", (req, res) => {
+  res.send("Zawa Helper is online.");
+});
+
 app.get("/hub", async (req, res) => {
   const key = req.query.key;
-
-  const { data, error } = await supabase
-    .from("keys")
-    .select("*")
-    .eq("key", key)
-    .maybeSingle();
-
-  if (!data || error) return res.type("text/plain").send('print("Invalid key")');
-  if (!data.usedby) return res.type("text/plain").send('print("Key not redeemed")');
-  if (data.scriptaccess === false || data.banned === true) return res.type("text/plain").send('print("No access")');
-
-  res.send(SCRIPT);
-});
-
-app.get("/auth", async (req, res) => {
-  const key = req.query.key;
   const hwid = req.query.hwid;
-
-  if (!key || !hwid) return res.send("MISSING");
-
-  const { data } = await supabase
-    .from("keys")
-    .select("*")
-    .eq("key", key)
-    .maybeSingle();
-
-  if (!data) return res.send("INVALID");
-
-  if (!data.hwid) {
-    await supabase.from("keys").update({ hwid }).eq("key", key);
-    return res.send("OK");
-  }
-
-  if (data.hwid !== hwid) return res.send("HWID_MISMATCH");
-
-  return res.send("OK");
-});
 
   const { data, error } = await supabase
     .from("keys")
@@ -129,6 +102,14 @@ app.get("/auth", async (req, res) => {
   if (data.scriptaccess === false || data.banned === true) return res.type("text/plain").send('print("No access")');
   if (isExpired(data.expiresat)) return res.type("text/plain").send('print("Key expired")');
 
+  if (!hwid) return res.type("text/plain").send('print("Missing HWID")');
+
+  if (!data.hwid) {
+    await supabase.from("keys").update({ hwid }).eq("key", key);
+  } else if (data.hwid !== hwid) {
+    return res.type("text/plain").send('print("HWID mismatch")');
+  }
+
   await supabase.from("keys").update({
     totalexecutions: (data.totalexecutions || 0) + 1,
     lastexecution: new Date().toISOString()
@@ -137,9 +118,44 @@ app.get("/auth", async (req, res) => {
   return res.type("text/plain").send(SCRIPT);
 });
 
-app.listen(PORT, () => console.log("Server running on port " + PORT));
+app.get("/auth", async (req, res) => {
+  const key = req.query.key;
+  const hwid = req.query.hwid;
 
-const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+  if (!key || !hwid) return res.type("text/plain").send("MISSING");
+
+  const { data } = await supabase
+    .from("keys")
+    .select("*")
+    .eq("key", key)
+    .maybeSingle();
+
+  if (!data) return res.type("text/plain").send("INVALID");
+  if (!data.usedby) return res.type("text/plain").send("NOT_REDEEMED");
+  if (data.scriptaccess === false || data.banned === true) return res.type("text/plain").send("NO_ACCESS");
+  if (isExpired(data.expiresat)) return res.type("text/plain").send("EXPIRED");
+
+  if (!data.hwid) {
+    await supabase.from("keys").update({ hwid }).eq("key", key);
+    return res.type("text/plain").send("OK");
+  }
+
+  if (data.hwid !== hwid) return res.type("text/plain").send("HWID_MISMATCH");
+
+  return res.type("text/plain").send("OK");
+});
+
+app.listen(PORT, () => {
+  console.log("Server running on port " + PORT);
+});
+
+/* =========================
+   DISCORD BOT
+========================= */
+
+const client = new Client({
+  intents: [GatewayIntentBits.Guilds]
+});
 
 const commands = [
   new SlashCommandBuilder().setName("panel").setDescription("Open user panel"),
@@ -156,11 +172,11 @@ const commands = [
     .setName("gentimekey")
     .setDescription("Generate 1 timed key")
     .addIntegerOption(opt =>
-      opt.setName("length").setDescription("How long the key lasts").setRequired(true).setMinValue(1)
+      opt.setName("length").setDescription("Length").setRequired(true).setMinValue(1)
     )
     .addStringOption(opt =>
       opt.setName("unit")
-        .setDescription("Time unit")
+        .setDescription("Unit")
         .setRequired(true)
         .addChoices(
           { name: "minutes", value: "minutes" },
@@ -171,7 +187,7 @@ const commands = [
 
   new SlashCommandBuilder()
     .setName("resethwid")
-    .setDescription("Force reset a user's HWID")
+    .setDescription("Force reset user's HWID")
     .addUserOption(opt => opt.setName("user").setDescription("User").setRequired(true)),
 
   new SlashCommandBuilder()
@@ -208,10 +224,10 @@ const commands = [
 const rest = new REST({ version: "10" }).setToken(TOKEN);
 
 async function registerCommands() {
-  await rest.put(Routes.applicationGuildCommands(CLIENT_ID, GUILD_ID), {
-    body: commands.map(cmd => cmd.toJSON())
-  });
-
+  await rest.put(
+    Routes.applicationGuildCommands(CLIENT_ID, GUILD_ID),
+    { body: commands.map(cmd => cmd.toJSON()) }
+  );
   console.log("Commands registered");
 }
 
@@ -223,13 +239,11 @@ client.on(Events.InteractionCreate, async (interaction) => {
   try {
     if (interaction.isChatInputCommand()) {
       const cmd = interaction.commandName;
-      const access = await getRoleAccess(interaction);
+      const access = await getAccess(interaction);
 
       if (cmd !== "panel") {
-        if (access.isOwner) {
-        } else if (cmd === "gentimekey") {
-          return interaction.reply({ embeds: [zawaEmbed("No Permission", "Only the owner can use this command.")], ephemeral: true });
-        } else if (access.hasFull) {
+        if (access.isOwner || access.hasFull) {
+          // allowed
         } else if (access.hasMid) {
           const allowed = ["zawahelp", "resethwid", "keyinfo", "userkeys"];
           if (!allowed.includes(cmd)) {
@@ -250,7 +264,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
             "`/panel`",
             "`/zawahelp`",
             "`/genkey`",
-            "`/gentimekey` - owner only timed key",
+            "`/gentimekey`",
             "`/resethwid`",
             "`/keyinfo`",
             "`/userkeys`",
@@ -271,7 +285,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
         );
 
         return interaction.reply({
-          embeds: [zawaEmbed("User Panel", "Welcome! Use the buttons below to manage your key.")],
+          embeds: [zawaEmbed("User Panel", "Use the buttons below to manage your key.")],
           components: [row]
         });
       }
@@ -295,8 +309,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
         }
 
         const { error } = await supabase.from("keys").insert(rows);
-
-        if (error) return interaction.reply({ embeds: [zawaEmbed("Error", "Failed to generate keys. Check Railway logs.")] });
+        if (error) return interaction.reply({ embeds: [zawaEmbed("Error", "Failed to generate keys.")] });
 
         return interaction.reply({
           embeds: [zawaEmbed("Generated Keys", `Generated ${amount} key(s):\n\`\`\`\n${rows.map(r => r.key).join("\n")}\n\`\`\``)]
@@ -304,12 +317,16 @@ client.on(Events.InteractionCreate, async (interaction) => {
       }
 
       if (cmd === "gentimekey") {
+        if (!access.isOwner) {
+          return interaction.reply({ embeds: [zawaEmbed("No Permission", "Only owner can use this.")], ephemeral: true });
+        }
+
         const length = interaction.options.getInteger("length");
         const unit = interaction.options.getString("unit");
         const key = generateKey();
         const expiresAt = getExpiryDate(length, unit);
 
-        const { error } = await supabase.from("keys").insert([{
+        await supabase.from("keys").insert([{
           key,
           usedby: null,
           hwid: null,
@@ -321,14 +338,8 @@ client.on(Events.InteractionCreate, async (interaction) => {
           expiresat: expiresAt
         }]);
 
-        if (error) return interaction.reply({ embeds: [zawaEmbed("Error", "Failed to generate timed key.")] });
-
         return interaction.reply({
-          embeds: [zawaEmbed("Timed Key Generated", [
-            `Key: \`${key}\``,
-            `Valid For: ${length} ${unit}`,
-            `Expires At: ${expiresAt}`
-          ].join("\n"))]
+          embeds: [zawaEmbed("Timed Key Generated", `Key: \`${key}\`\nValid For: ${length} ${unit}\nExpires At: ${expiresAt}`)]
         });
       }
 
@@ -336,7 +347,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
         const user = interaction.options.getUser("user");
         const row = await getUserKeyRow(user.id);
 
-        if (!row) return interaction.reply({ embeds: [zawaEmbed("Not Found", "That user has no redeemed key.")] });
+        if (!row) return interaction.reply({ embeds: [zawaEmbed("Not Found", "That user has no key.")] });
 
         await supabase.from("keys").update({
           hwid: null,
@@ -375,7 +386,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
         const user = interaction.options.getUser("user");
         const { data } = await supabase.from("keys").select("*").eq("usedby", user.id);
 
-        if (!data || data.length === 0) return interaction.reply({ embeds: [zawaEmbed("No Keys", "No keys found for that user.")] });
+        if (!data || data.length === 0) return interaction.reply({ embeds: [zawaEmbed("No Keys", "No keys found.")] });
 
         return interaction.reply({
           embeds: [zawaEmbed(`Keys for ${user.tag}`, `\`\`\`\n${data.map(k => k.key).join("\n")}\n\`\`\``)]
@@ -386,7 +397,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
         const user = interaction.options.getUser("user");
         const row = await getUserKeyRow(user.id);
 
-        if (!row) return interaction.reply({ embeds: [zawaEmbed("Not Found", "That user has no redeemed key.")] });
+        if (!row) return interaction.reply({ embeds: [zawaEmbed("Not Found", "That user has no key.")] });
 
         await supabase.from("keys").update({
           usedby: null,
@@ -396,7 +407,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
           note: `Blacklisted user ${user.tag} (${user.id})`
         }).eq("key", row.key);
 
-        return interaction.reply({ embeds: [zawaEmbed("User Blacklisted", `${user.tag} has been blacklisted and their key was reset.`)] });
+        return interaction.reply({ embeds: [zawaEmbed("Blacklisted", `${user.tag} has been blacklisted.`)] });
       }
 
       if (cmd === "unblacklist") {
@@ -416,7 +427,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
           note: null
         }).eq("key", data.key);
 
-        return interaction.reply({ embeds: [zawaEmbed("User Unblacklisted", `${user.tag} has been unblacklisted.`)] });
+        return interaction.reply({ embeds: [zawaEmbed("Unblacklisted", `${user.tag} has been unblacklisted.`)] });
       }
 
       if (cmd === "resetkey") {
@@ -427,7 +438,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
           hwid: null
         }).eq("key", key);
 
-        return interaction.reply({ embeds: [zawaEmbed("Key Reset", "Key ownership and HWID have been reset.")] });
+        return interaction.reply({ embeds: [zawaEmbed("Key Reset", "Key reset.")] });
       }
 
       if (cmd === "deletekey") {
@@ -435,13 +446,15 @@ client.on(Events.InteractionCreate, async (interaction) => {
 
         await supabase.from("keys").delete().eq("key", key);
 
-        return interaction.reply({ embeds: [zawaEmbed("Key Deleted", "Key deleted from database.")] });
+        return interaction.reply({ embeds: [zawaEmbed("Key Deleted", "Key deleted.")] });
       }
     }
 
     if (interaction.isButton()) {
       if (interaction.customId === "redeem_key") {
-        const modal = new ModalBuilder().setCustomId("redeem_modal").setTitle("Redeem Key");
+        const modal = new ModalBuilder()
+          .setCustomId("redeem_modal")
+          .setTitle("Redeem Key");
 
         const input = new TextInputBuilder()
           .setCustomId("key_input")
@@ -456,33 +469,36 @@ client.on(Events.InteractionCreate, async (interaction) => {
       if (interaction.customId === "get_script") {
         const row = await getUserKeyRow(interaction.user.id);
 
-        if (!row) return interaction.reply({ embeds: [zawaEmbed("No Key", "Redeem a valid key first.")], ephemeral: true });
-        if (row.scriptaccess === false || row.banned || isExpired(row.expiresat)) {
-          return interaction.reply({ embeds: [zawaEmbed("No Access", "Your key does not have access or has expired.")], ephemeral: true });
-        }
+        if (!row) return interaction.reply({ embeds: [zawaEmbed("No Key", "Redeem a key first.")], ephemeral: true });
 
         const loader =
 `getgenv().key = "${row.key}"
-loadstring(game:HttpGet("${APP_URL}/hub?key=" .. getgenv().key))()`;
+getgenv().hwid = game:GetService("RbxAnalyticsService"):GetClientId()
 
-        return interaction.reply({ embeds: [zawaEmbed("Your Loader", `\`\`\`lua\n${loader}\n\`\`\``)], ephemeral: true });
+loadstring(game:HttpGet("${APP_URL}/hub?key=" .. getgenv().key .. "&hwid=" .. getgenv().hwid))()`;
+
+        return interaction.reply({
+          embeds: [zawaEmbed("Your Loader", `\`\`\`lua\n${loader}\n\`\`\``)],
+          ephemeral: true
+        });
       }
 
       if (interaction.customId === "reset_hwid") {
         const row = await getUserKeyRow(interaction.user.id);
+
+        if (!row) return interaction.reply({ embeds: [zawaEmbed("No Key", "Redeem a key first.")], ephemeral: true });
+
         const DAY = 24 * 60 * 60 * 1000;
 
-if (row.lastreset && Date.now() - new Date(row.lastreset).getTime() < DAY) {
-  const remaining = DAY - (Date.now() - new Date(row.lastreset).getTime());
-  const hours = Math.ceil(remaining / (60 * 60 * 1000));
+        if (row.lastreset && Date.now() - new Date(row.lastreset).getTime() < DAY) {
+          const remaining = DAY - (Date.now() - new Date(row.lastreset).getTime());
+          const hours = Math.ceil(remaining / (60 * 60 * 1000));
 
-  return interaction.reply({
-    embeds: [zawaEmbed("Cooldown", `You can reset HWID again in about ${hours} hour(s).`)],
-    ephemeral: true
-  });
-}
-
-        if (!row) return interaction.reply({ embeds: [zawaEmbed("No Key", "Redeem a valid key first.")], ephemeral: true });
+          return interaction.reply({
+            embeds: [zawaEmbed("Cooldown", `You can reset HWID again in about ${hours} hour(s).`)],
+            ephemeral: true
+          });
+        }
 
         await supabase.from("keys").update({
           hwid: null,
@@ -496,30 +512,35 @@ if (row.lastreset && Date.now() - new Date(row.lastreset).getTime() < DAY) {
       if (interaction.customId === "stats") {
         const row = await getUserKeyRow(interaction.user.id);
 
-        if (!row) return interaction.reply({ embeds: [zawaEmbed("No Key", "Redeem a valid key first.")], ephemeral: true });
+        if (!row) return interaction.reply({ embeds: [zawaEmbed("No Key", "Redeem a key first.")], ephemeral: true });
 
-        const stats = [
-          `Total Executions: ${row.totalexecutions || 0} 🧠`,
-          `HWID Status: ${row.hwid ? "Assigned ✅" : "Not Assigned ❌"}`,
-          `Key: ||${row.key}|| 🔒`,
-          `Total HWID Resets: ${row.totalhwidresets || 0} ⚙️`,
-          `Last Reset: ${row.lastreset || "Never"} 📅`,
-          `Expires At: ${row.expiresat || "Never"} 📅`,
-          `Expired: ${isExpired(row.expiresat) ? "Yes" : "No"}`,
-          `Banned: ${row.banned ? "Yes ⛔" : "No ⛔"}`,
-          "",
-          `**Note:**`,
-          `${row.note || "Not specified"}`
-        ].join("\n");
-
-        return interaction.reply({ embeds: [zawaEmbed("Stats", stats)], ephemeral: true });
+        return interaction.reply({
+          embeds: [zawaEmbed("Stats", [
+            `Total Executions: ${row.totalexecutions || 0}`,
+            `HWID Status: ${row.hwid ? "Assigned ✅" : "Not Assigned ❌"}`,
+            `Key: ||${row.key}||`,
+            `Total HWID Resets: ${row.totalhwidresets || 0}`,
+            `Last Reset: ${row.lastreset || "Never"}`,
+            `Expires At: ${row.expiresat || "Never"}`,
+            `Expired: ${isExpired(row.expiresat) ? "Yes" : "No"}`,
+            `Banned: ${row.banned ? "Yes" : "No"}`,
+            "",
+            `**Note:**`,
+            `${row.note || "Not specified"}`
+          ].join("\n"))],
+          ephemeral: true
+        });
       }
     }
 
     if (interaction.isModalSubmit() && interaction.customId === "redeem_modal") {
       const enteredKey = interaction.fields.getTextInputValue("key_input").trim();
 
-      const { data } = await supabase.from("keys").select("*").eq("key", enteredKey).maybeSingle();
+      const { data } = await supabase
+        .from("keys")
+        .select("*")
+        .eq("key", enteredKey)
+        .maybeSingle();
 
       if (!data) return interaction.reply({ embeds: [zawaEmbed("Invalid Key", "That key does not exist.")], ephemeral: true });
       if (data.banned || data.scriptaccess === false) return interaction.reply({ embeds: [zawaEmbed("No Access", "This key has no access.")], ephemeral: true });
@@ -540,10 +561,16 @@ if (row.lastreset && Date.now() - new Date(row.lastreset).getTime() < DAY) {
     }
   } catch (err) {
     console.error("INTERACTION ERROR:", err);
+
     if (interaction.isRepliable()) {
-      return interaction.reply({ embeds: [zawaEmbed("Error", "Something broke. Check Railway logs.")], ephemeral: true }).catch(() => {});
+      return interaction.reply({
+        embeds: [zawaEmbed("Error", "Something broke. Check Railway logs.")],
+        ephemeral: true
+      }).catch(() => {});
     }
   }
 });
 
-registerCommands().then(() => client.login(TOKEN)).catch(console.error);
+registerCommands()
+  .then(() => client.login(TOKEN))
+  .catch(console.error);
